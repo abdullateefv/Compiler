@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <string>
+#include <cmath>
 #include "parseInt.h"
 #include "val.h"
 
@@ -338,7 +339,7 @@ bool WriteLnStmt(istream& in, int& line) {
 
 //IfStmt:= if (Expr) then Stm} [Else Stmt]
 bool IfStmt(istream& in, int& line) {
-    bool ex=false, status ;
+    bool ex=false, status;
     LexItem t;
 
     t = Parser::GetNextToken(in, line);
@@ -348,8 +349,9 @@ bool IfStmt(istream& in, int& line) {
         return false;
     }
 
-    Value temp = Value();
-    ex = LogicExpr(in, line, temp);
+    Value expressionEval;
+    ex = LogicExpr(in, line, expressionEval);
+
     if( !ex ) {
         ParseError(line, "Missing if statement Logic Expression");
         return false;
@@ -443,6 +445,16 @@ bool AssignStmt(istream& in, int& line) {
                         TempsResults.insert({variableRef.GetLexeme(), Value(value)});
                     } else {
                         ParseError(line, "Int cannot be assigned this type");
+                        return false;
+                    }
+                } else if (SymTable.find(variableRef.GetLexeme())->second == REAL) {
+                    if (assignedValue.IsReal()) {
+                        TempsResults.insert({variableRef.GetLexeme(), assignedValue});
+                    } else if (assignedValue.IsInt()) {
+                        float value = assignedValue.GetInt();
+                        TempsResults.insert({variableRef.GetLexeme(), Value(value)});
+                    } else {
+                        ParseError(line, "Real cannot be assigned this type");
                         return false;
                     }
                 } else {
@@ -600,6 +612,10 @@ bool Term(istream& in, int& line, Value& retVal) {
                 ParseError(line, "Illegal division operation.");
                 return false;
             }
+            if (isinf(retVal.GetReal())) {
+                ParseError(line, "Run-Time Error-Illegal Division by Zero");
+                return false;
+            }
         }
 
         tok = Parser::GetNextToken(in, line);
@@ -637,8 +653,8 @@ bool SFactor(istream& in, int& line, Value & retVal) {
 //LogicExpr = Expr (== | <) Expr
 bool LogicExpr(istream& in, int& line, Value & retVal)
 {
-    Value temp = Value();
-    bool t1 = Expr(in, line, temp);
+    Value leftHandSide, rightHandSide;
+    bool t1 = Expr(in, line, leftHandSide);
     LexItem tok;
 
     if( !t1 ) {
@@ -653,13 +669,26 @@ bool LogicExpr(istream& in, int& line, Value & retVal)
     }
     if ( tok == GTHAN  || tok == EQUAL  || tok == LTHAN)
     {
-        Value temp = Value();
-        t1 = Expr(in, line, temp);
+        t1 = Expr(in, line, rightHandSide);
         if( !t1 )
         {
             ParseError(line, "Missing expression after relational operator");
             return false;
         }
+
+        if (tok == EQUAL) {
+            retVal = (leftHandSide == rightHandSide);
+        } else if (tok == GTHAN) {
+            retVal = (leftHandSide > rightHandSide);
+        } else if (tok == LTHAN) {
+            retVal = (leftHandSide < rightHandSide);
+        }
+
+        if (retVal.IsErr()) {
+            ParseError(line, "Run-Time Error-Illegal Mixed Type Operands for a Logic Expression");
+            return  false;
+        }
+
         return true;
     }
     Parser::PushBackToken(tok);

@@ -3,11 +3,16 @@ PROGRAM circle;
 VAR
 	(*Variable declarations*)
 	r, p, a : REAL;
-	str1, str2 : String;
+	str : String;
 BEGIN
-	str1 := 'Good Morning';
-	str2 := str1 + ' ' + 'NJIT' ;
+	r := 8;
+	p := 0 ;
+	a := r/p;
+	IF ( p = 5) THEN
+	  	a := (3.14) + r * p
+	ELSE
+		a := p;
 
 	(*Display the results*)
-	WRITELN  ('The output results are ' , str1, ', ', str2);
+	WRITELN  ('The output results are ' , r, ' ', p, ' ', a);
 END

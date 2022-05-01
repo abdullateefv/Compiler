@@ -139,15 +139,15 @@ public:
     
     Value operator==(const Value& op) const {
         if (this->GetType() == VINT && op.GetType() == VINT) {
-            return false;
+            return Value(this->GetInt() == op.GetInt());
         } else if (this->GetType() == VREAL && op.GetType() == VREAL) {
-            return false;
+            return Value(this->GetReal() == op.GetReal());
         } else if (this->GetType() == VREAL && op.GetType() == VINT) {
-            return false;
+            return Value(this->GetReal() == op.GetInt());
         } else if (this->GetType() == VINT && op.GetType() == VREAL) {
-            return false;
+            return Value(this->GetInt() == op.GetReal());
         } else if (this->GetType() == VSTRING && op.GetType() == VSTRING) {
-            return false;
+            return Value(this->GetString() == op.GetString());
         } else {
             Value errorVal;
             return errorVal;
@@ -156,13 +156,13 @@ public:
 
 	Value operator>(const Value& op) const {
         if (this->GetType() == VINT && op.GetType() == VINT) {
-            return this->GetInt() > op.GetInt();
+            return Value(this->GetInt() > op.GetInt());
         } else if (this->GetType() == VREAL && op.GetType() == VREAL) {
-            return this->GetReal() > op.GetReal();
+            return Value(this->GetReal() > op.GetReal());
         } else if (this->GetType() == VREAL && op.GetType() == VINT) {
-            return this->GetReal() > op.GetInt();
+            return Value(this->GetReal() > op.GetInt());
         } else if (this->GetType() == VINT && op.GetType() == VREAL) {
-            return this->GetInt() > op.GetReal();
+            return Value(this->GetInt() > op.GetReal());
         } else {
             Value errorVal;
             return errorVal;
@@ -171,13 +171,13 @@ public:
 	
 	Value operator<(const Value& op) const {
         if (this->GetType() == VINT && op.GetType() == VINT) {
-            return this->GetInt() < op.GetInt();
+            return Value(this->GetInt() < op.GetInt());
         } else if (this->GetType() == VREAL && op.GetType() == VREAL) {
-            return this->GetReal() < op.GetReal();
+            return Value(this->GetReal() < op.GetReal());
         } else if (this->GetType() == VREAL && op.GetType() == VINT) {
-            return this->GetReal() < op.GetInt();
+            return Value(this->GetReal() < op.GetInt());
         } else if (this->GetType() == VINT && op.GetType() == VREAL) {
-            return this->GetInt() < op.GetReal();
+            return Value(this->GetInt() < op.GetReal());
         } else {
             Value errorVal;
             return errorVal;
