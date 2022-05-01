@@ -370,13 +370,21 @@ bool IfStmt(istream& in, int& line) {
         ParseError(line, "If-Stmt Syntax Error");
         return false;
     }
-    status = Stmt(in, line);
-    if(!status)
-    {
-        ParseError(line, "Missing Statement for If-Stmt Then-Part");
-        return false;
+
+    if (expressionEval.GetBool() == true) {
+        status = Stmt(in, line);
+        if(!status)
+        {
+            ParseError(line, "Missing Statement for If-Stmt Then-Part");
+            return false;
+        }
+        t = Parser::GetNextToken(in, line);
+    } else {
+        while (t!= ELSE && t!= WRITELN) {
+            t = Parser::GetNextToken(in,line);
+        }
     }
-    t = Parser::GetNextToken(in, line);
+
     if( t == ELSE ) {
         status = Stmt(in, line);
         if(!status)
@@ -458,7 +466,7 @@ bool AssignStmt(istream& in, int& line) {
                         return false;
                     }
                 } else {
-                    TempsResults.insert({variableRef.GetLexeme(), assignedValue});
+                    TempsResults[variableRef.GetLexeme()] = assignedValue;
                 }
             }
         } else if (t.GetToken() == ERR) {

@@ -1,18 +1,23 @@
 PROGRAM circle;
-	(*Testing divide by zero execution error*)
+	(*Clean Program*)
 VAR
 	(*Variable declarations*)
-	r, p, a : REAL;
-	str : String;
+	r, a, p, b : REAL;
+	i, j, sum : INTEGER;
+	str1, str2: STRING;
 BEGIN
-	r := 8;
-	p := 0 ;
-	a := r/p;
-	IF ( p = 5) THEN
-	  	a := (3.14) + r * p
+	i := 8;
+	p := 6;
+	a := 0;
+	sum := 0;
+	str1 := 'Hello World!';
+	j := -3;
+	IF ( p > 5) THEN
+	  	a := (3.14) + j * - p
 	ELSE
-		a := p;
+		IF (p = 0 ) THEN str1 := 'Hello';
+
 
 	(*Display the results*)
-	WRITELN  ('The output results are ' , r, ' ', p, ' ', a);
+	WRITELN  ('The output results are: ' , p, ' ', str1, ' ', a, ' ', i, ' ', j);
 END
